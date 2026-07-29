@@ -11,7 +11,7 @@ from .corrector import Autocorrect
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="autocorrect",
-        description="Suggest spelling corrections trained on a Shakespearean corpus.",
+        description="Suggest spelling corrections trained on the Sherlock Holmes canon.",
     )
     parser.add_argument(
         "word", nargs="?", help="Word to correct. Omit to start an interactive session."
@@ -44,7 +44,7 @@ def print_suggestions(model: Autocorrect, word: str, limit: int) -> None:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
-    print("Loading Shakespearean corpus...", file=sys.stderr)
+    print("Loading Sherlock Holmes corpus...", file=sys.stderr)
     model = Autocorrect.from_corpus()
     print(f"Loaded {len(model.word_frequency)} unique words.", file=sys.stderr)
 

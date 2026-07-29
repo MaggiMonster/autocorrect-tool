@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "autocorrect-tool"
 version = "1.0.0"
-description = "NLP autocorrect trained on a Shakespearean corpus using Levenshtein distance (dynamic programming) and word-frequency probabilities."
+description = "NLP autocorrect trained on the Sherlock Holmes canon using Levenshtein distance (dynamic programming) and word-frequency probabilities."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }

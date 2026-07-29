@@ -8,14 +8,14 @@ from pathlib import Path
 
 _WORD_RE = re.compile(r"[a-z]+(?:'[a-z]+)?")
 
-DEFAULT_CORPUS_PATH = Path(__file__).resolve().parent.parent / "data" / "shakespeare.txt"
+DEFAULT_CORPUS_PATH = Path(__file__).resolve().parent.parent / "data" / "sherlock_holmes.txt"
 
 
 def tokenize(text: str) -> list[str]:
     """Lowercase and split raw text into word tokens.
 
-    Keeps internal apostrophes (e.g. "thou'rt", "th'") since they're common
-    in Early Modern English and matter for matching real Shakespearean words.
+    Keeps internal apostrophes (e.g. "don't", "it's") so contractions are
+    treated as single words instead of being split apart.
     """
     return _WORD_RE.findall(text.lower())
 

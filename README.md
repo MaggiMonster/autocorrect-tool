@@ -1,28 +1,27 @@
 # Autocorrect Tool — NLP + Dynamic Programming
 
-A spelling autocorrect engine trained on the complete works of Shakespeare.
-It suggests the most likely correct word for a misspelling using
-**Levenshtein edit distance (computed via dynamic programming)**, ranked by
-**word-frequency probability** learned from the corpus.
+A spelling autocorrect engine trained on the Sherlock Holmes canon (Arthur
+Conan Doyle). It suggests the most likely correct word for a misspelling
+using **Levenshtein edit distance (computed via dynamic programming)**,
+ranked by **word-frequency probability** learned from the corpus.
 
 ```
-> thnie
-Suggestions for 'thnie':
-  1. thine           edit distance=1  P(word)=0.000513
+> ellementary
+Suggestions for 'ellementary':
+  1. elementary      edit distance=1  P(word)=0.000010
 
-> wherefre
-Suggestions for 'wherefre':
-  1. wherefore       edit distance=1  P(word)=0.000148
+> wathson
+Suggestions for 'wathson':
+  1. watson          edit distance=1  P(word)=0.001334
 ```
 
 ## How it works
 
 1. **Corpus & frequency model** ([autocorrect/corpus.py](autocorrect/corpus.py))
-   The full text of *The Complete Works of William Shakespeare* (public
-   domain, via [Project Gutenberg](https://www.gutenberg.org/ebooks/100)) is
-   tokenized and counted into a word-frequency table. This gives P(word) —
-   the probability of any given word, estimated by how often it appears in
-   the corpus.
+   Seven Sherlock Holmes books (public domain, via
+   [Project Gutenberg](https://www.gutenberg.org)) are tokenized and counted
+   into a word-frequency table. This gives P(word) — the probability of any
+   given word, estimated by how often it appears in the corpus.
 
 2. **Levenshtein distance via dynamic programming** ([autocorrect/edit_distance.py](autocorrect/edit_distance.py))
    The classic DP edit-distance algorithm computes the minimum number of
@@ -31,7 +30,7 @@ Suggestions for 'wherefre':
    O(min(n,m)) space).
 
 3. **Candidate generation, optimized to 1- and 2-edit transformations** ([autocorrect/corrector.py](autocorrect/corrector.py))
-   Running the DP edit-distance function against every word in a ~24,000-word
+   Running the DP edit-distance function against every word in a ~17,000-word
    vocabulary for every keystroke would be wasteful. Instead, the corrector
    *generates* every string reachable from the input by a single insertion,
    deletion, substitution, or transposition (`edits1`), and — only if none of
@@ -43,8 +42,8 @@ Suggestions for 'wherefre':
 4. **Ranking by frequency probability**
    Among the known candidates at the closest edit distance, the corrector
    picks the ones most likely to be the *intended* word — ranked by how
-   frequently they occur in Shakespeare's text — rather than an arbitrary
-   candidate that happens to share the same edit distance.
+   frequently they occur in the corpus — rather than an arbitrary candidate
+   that happens to share the same edit distance.
 
 5. **Fallback**
    If no known word is found within 2 edits, the corrector falls back to a
@@ -68,7 +67,7 @@ standard library.
 
 ```bash
 # One-shot correction
-python -m autocorrect.cli "wherefre"
+python -m autocorrect.cli "ellementary"
 
 # Interactive session
 python -m autocorrect.cli
@@ -84,13 +83,13 @@ from autocorrect import Autocorrect
 
 model = Autocorrect.from_corpus()
 
-model.correct("thnie")          # -> "thine"
+model.correct("wathson")        # -> "watson"
 
 for s in model.suggest("wich", limit=3):
     print(s.word, s.edit_distance, s.probability)
-# with   1  0.008620
-# which  1  0.002600
-# wish   1  0.000270
+# with   1  0.007876
+# which  1  0.006483
+# wish   1  0.000250
 ```
 
 ## Project structure
@@ -104,7 +103,7 @@ autocorrect-tool/
 │   ├── corrector.py        # candidate generation + ranking
 │   └── cli.py               # command-line interface
 ├── data/
-│   └── shakespeare.txt    # training corpus (public domain)
+│   └── sherlock_holmes.txt  # training corpus (public domain)
 ├── tests/
 │   ├── test_edit_distance.py
 │   ├── test_corpus.py
@@ -122,9 +121,16 @@ pytest
 
 ## Data source
 
-`data/shakespeare.txt` is *The Complete Works of William Shakespeare*
-([Project Gutenberg eBook #100](https://www.gutenberg.org/ebooks/100)),
-public domain in the United States.
+`data/sherlock_holmes.txt` combines seven Arthur Conan Doyle novels/story
+collections, all public domain in the United States, from Project Gutenberg:
+
+- [The Adventures of Sherlock Holmes](https://www.gutenberg.org/ebooks/1661)
+- [The Return of Sherlock Holmes](https://www.gutenberg.org/ebooks/108)
+- [The Sign of the Four](https://www.gutenberg.org/ebooks/2097)
+- [A Study in Scarlet](https://www.gutenberg.org/ebooks/244)
+- [The Valley of Fear](https://www.gutenberg.org/ebooks/3289)
+- [The Memoirs of Sherlock Holmes](https://www.gutenberg.org/ebooks/834)
+- [His Last Bow](https://www.gutenberg.org/ebooks/2350)
 
 ## License
 
