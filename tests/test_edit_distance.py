@@ -2,7 +2,7 @@ from autocorrect.edit_distance import levenshtein_distance
 
 
 def test_identical_words():
-    assert levenshtein_distance("thou", "thou") == 0
+    assert levenshtein_distance("holmes", "holmes") == 0
 
 
 def test_single_substitution():
